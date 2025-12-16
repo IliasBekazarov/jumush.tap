@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero секция -->
+    <div class="text-center py-5 mb-5 bg-light rounded">
+        <h1 class="display-4 fw-bold text-primary">
+            <i class="fas fa-briefcase"></i> JumushTap
+        </h1>
+        <p class="lead mb-4">Жумуш издеген менен жумуш берүүчүнү байланыштырган эң жөнөкөй платформа</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'job_list' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-search"></i> Жумуш издөө
+            </a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'job_create' %}" class="btn btn-success btn-lg">
+                    <i class="fas fa-plus"></i> Жумуш жарыялоо
+                </a>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn btn-success btn-lg">
+                    <i class="fas fa-user-plus"></i> Каттоо
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Категориялар -->
+    {% if categories %}
+    <div class="mb-5">
+        <h2 class="text-center mb-4">Категориялар</h2>
+        <div class="row g-3">
+            {% for category in categories %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="{% url 'job_list' %}?category={{ category.slug }}" class="text-decoration-none">
+                    <div class="card text-center h-100 shadow-sm hover-card">
+                        <div class="card-body">
+                            <i class="fas {{ category.icon|default:'fa-briefcase' }} fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">{{ category.name }}</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Акыркы жумуштар -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Акыркы жумуштар</h2>
+            <a href="{% url 'job_list' %}" class="btn btn-outline-primary">Баарын көрүү <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        {% if jobs %}
+        <div class="row g-4">
+            {% for job in jobs %}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    {% if job.image %}
+                        <img src="{{ job.image.url }}" class="card-img-top" alt="{{ job.title }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-briefcase fa-4x text-muted"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ job.title }}</h5>
+                        <p class="card-text text-muted">
+                            {{ job.description|truncatewords:15 }}
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary">{{ job.get_job_type_display }}</span>
+                            <span class="text-success fw-bold">{{ job.price }} сом</span>
+                        </div>
+                        <div class="small text-muted mb-3">
+                            <i class="fas fa-map-marker-alt"></i> {{ job.location }}
+                        </div>
+                        <a href="{% url 'job_detail' job.slug %}" class="btn btn-primary w-100">
+                            Толугу <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle"></i> Учурда жумуш жарыялары жок
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Статистика -->
+    <div class="bg-primary text-white rounded p-5 text-center">
+        <div class="row">
+            <div class="col-md-4 mb-3 mb-md-0">
+                <i class="fas fa-briefcase fa-3x mb-3"></i>
+                <h3>Жөнөкөй</h3>
+                <p>Бир басуу менен жумуш жарыялаңыз</p>
+            </div>
+            <div class="col-md-4 mb-3 mb-md-0">
+                <i class="fas fa-mobile-alt fa-3x mb-3"></i>
+                <h3>Жеткиликтүү</h3>
+                <p>Телефондон оңой колдонуңуз</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-users fa-3x mb-3"></i>
+                <h3>Коопсуз</h3>
+                <p>Ишенимдүү колдонуучулар</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

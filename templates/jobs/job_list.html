@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Жумуштар - JumushTap{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4"><i class="fas fa-search"></i> Жумуш издөө</h1>
+
+    <!-- Фильтрлер -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Издөө</label>
+                    <input type="text" name="search" class="form-control" placeholder="Жумуш аталышы..." value="{{ request.GET.search }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Категория</label>
+                    <select name="category" class="form-select">
+                        <option value="">Бардык категориялар</option>
+                        {% for category in categories %}
+                            <option value="{{ category.slug }}" {% if selected_category == category.slug %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Түрү</label>
+                    <select name="type" class="form-select">
+                        <option value="">Баары</option>
+                        <option value="onetime" {% if selected_type == 'onetime' %}selected{% endif %}>Бир жолку</option>
+                        <option value="daily" {% if selected_type == 'daily' %}selected{% endif %}>Күнүмдүк</option>
+                        <option value="parttime" {% if selected_type == 'parttime' %}selected{% endif %}>Подработка</option>
+                        <option value="fulltime" {% if selected_type == 'fulltime' %}selected{% endif %}>Толук жумуш</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Жайгашкан жер</label>
+                    <input type="text" name="location" class="form-control" placeholder="Шаар/айыл" value="{{ request.GET.location }}">
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Издөө
+                    </button>
+                    <a href="{% url 'job_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> Тазалоо
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Жумуштар тизмеси -->
+    {% if jobs %}
+    <div class="row g-4">
+        {% for job in jobs %}
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm hover-card">
+                {% if job.image %}
+                    <img src="{{ job.image.url }}" class="card-img-top" alt="{{ job.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-briefcase fa-4x text-muted"></i>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-primary">{{ job.get_job_type_display }}</span>
+                        {% if job.category %}
+                            <span class="badge bg-secondary">{{ job.category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <h5 class="card-title">{{ job.title }}</h5>
+                    <p class="card-text text-muted">{{ job.description|truncatewords:15 }}</p>
+                    <div class="mb-2">
+                        <i class="fas fa-map-marker-alt text-muted"></i> {{ job.location }}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-success fw-bold fs-5">{{ job.price }} сом</span>
+                        <small class="text-muted">
+                            <i class="fas fa-eye"></i> {{ job.views_count }}
+                        </small>
+                    </div>
+                    <a href="{% url 'job_detail' job.slug %}" class="btn btn-primary w-100">
+                        Толугу <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <i class="fas fa-info-circle fa-3x mb-3"></i>
+        <h4>Жумуш табылган жок</h4>
+        <p>Фильтрлерди өзгөртүп көрүңүз же жаңы жумуш жарыялаңыз</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'job_create' %}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Жумуш жарыялоо
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

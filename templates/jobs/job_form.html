@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if job %}Түзөтүү{% else %}Жумуш жарыялоо{% endif %} - JumushTap{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-{% if job %}edit{% else %}plus{% endif %}"></i>
+                        {% if job %}Жумушту түзөтүү{% else %}Жумуш жарыялоо{% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">
+                                {{ form.title.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                {{ form.description.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.category.id_for_label }}" class="form-label">
+                                    {{ form.category.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                    <div class="text-danger small">{{ form.category.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.job_type.id_for_label }}" class="form-label">
+                                    {{ form.job_type.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.job_type }}
+                                {% if form.job_type.errors %}
+                                    <div class="text-danger small">{{ form.job_type.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.price.id_for_label }}" class="form-label">
+                                    {{ form.price.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.price }}
+                                {% if form.price.errors %}
+                                    <div class="text-danger small">{{ form.price.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.contact_phone.id_for_label }}" class="form-label">
+                                    {{ form.contact_phone.label }} <span class="text-danger">*</span>
+                                </label>
+                                {{ form.contact_phone }}
+                                {% if form.contact_phone.errors %}
+                                    <div class="text-danger small">{{ form.contact_phone.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.location.id_for_label }}" class="form-label">
+                                {{ form.location.label }} <span class="text-danger">*</span>
+                            </label>
+                            {{ form.location }}
+                            {% if form.location.errors %}
+                                <div class="text-danger small">{{ form.location.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">
+                                {{ form.image.label }}
+                            </label>
+                            {{ form.image }}
+                            {% if form.image.errors %}
+                                <div class="text-danger small">{{ form.image.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">
+                                Сүрөт жумушту жакшы түшүндүрүүгө жардам берет
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save"></i> {% if job %}Сактоо{% else %}Жарыялоо{% endif %}
+                            </button>
+                            <a href="{% if job %}{% url 'job_detail' job.slug %}{% else %}{% url 'home' %}{% endif %}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-times"></i> Жокко чыгаруу
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Кеңештер -->
+            <div class="alert alert-info mt-4">
+                <h5><i class="fas fa-lightbulb"></i> Кеңештер:</h5>
+                <ul class="mb-0">
+                    <li>Жумуштун аталышын так жана кыска жазыңыз</li>
+                    <li>Сүрөттөмөдө жумуштун талаптарын жана шарттарын так көрсөтүңүз</li>
+                    <li>Реалдуу баа белгилеңиз</li>
+                    <li>Байланыш телефонуңузду текшериңиз</li>
+                    <li>Сүрөт кошуу өтүнмөлөрдү көбөйтөт</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
